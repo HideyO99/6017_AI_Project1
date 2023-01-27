@@ -103,6 +103,7 @@ void cPhysicSystem::createObject(cMeshObj* meshObj,cModelDrawInfo* DrawInfo)
     //plane->setMass(1.f);
     //plane->pBBox = &boundingBox;
     //plane->position = glm::vec3(0, 100,0);
+    obj->objName = meshObj->instanceName;
     obj->position = meshObj->position;
     pBBox->halfExtentOffset = glm::vec3((DrawInfo->extentX / 2.f) * meshObj->scale.x, (DrawInfo->extentY / 2.f) * meshObj->scale.y, (DrawInfo->extentZ / 2.f) * meshObj->scale.z);
     //float x = pBBox->halfExtentOffset.x + (DrawInfo->minX * meshObj->scale.x);
@@ -138,28 +139,72 @@ void cPhysicSystem::createObject(cMeshObj* meshObj,cModelDrawInfo* DrawInfo)
 
 }
 
+void cPhysicSystem::createObject(cMeshObj* meshObj, cModelDrawInfo* DrawInfo, cObject::AI_type AI_type)
+{
+    cObject* obj = new cObject();
+    obj->pMeshObj = meshObj;
+    cBoundingBox* pBBox = new cBoundingBox();
+    obj->pBBox = pBBox;
+
+    obj->objName = meshObj->instanceName;
+    obj->position = meshObj->position;
+    pBBox->halfExtentOffset = glm::vec3((DrawInfo->extentX / 2.f) * meshObj->scale.x, (DrawInfo->extentY / 2.f) * meshObj->scale.y, (DrawInfo->extentZ / 2.f) * meshObj->scale.z);
+
+    pBBox->centerPointOffset = glm::vec3(pBBox->halfExtentOffset.x + (DrawInfo->minX * meshObj->scale.x), pBBox->halfExtentOffset.y + (DrawInfo->minY * meshObj->scale.y), pBBox->halfExtentOffset.z + (DrawInfo->minZ * meshObj->scale.z));
+    pBBox->maxPointOffset = glm::vec3(DrawInfo->maxX * meshObj->scale.x, DrawInfo->maxY * meshObj->scale.y, DrawInfo->maxZ * meshObj->scale.z);
+    pBBox->minPointOffset = glm::vec3(DrawInfo->minX * meshObj->scale.x, DrawInfo->minY * meshObj->scale.y, DrawInfo->minZ * meshObj->scale.z);
+
+    if (meshObj->meshName == "enemy")
+    {
+        Sphere* enemy = new Sphere(Point(0), DrawInfo->extentY / 2);
+        obj->pShape = enemy;
+        obj->pSteering = new cSteering(&obj->position, &obj->direction,&obj->velocity);
+        obj->AI_Type = AI_type;
+    }
+    if (meshObj->meshName == "player")
+    {
+        float min[3] = { DrawInfo->minX,DrawInfo->minY,DrawInfo->minZ };
+        float max[3] = { DrawInfo->maxX,DrawInfo->maxY,DrawInfo->maxZ };
+        AABB* player = new AABB(min, max);
+
+        obj->pShape = player;
+    }
+    if (meshObj->meshName == "obstacle")
+    {
+        float min[3] = { pBBox->minPointOffset.x + meshObj->position.x,pBBox->minPointOffset.y + meshObj->position.y,pBBox->minPointOffset.z + meshObj->position.z };
+        float max[3] = { pBBox->maxPointOffset.x + meshObj->position.x,pBBox->maxPointOffset.y + meshObj->position.y,pBBox->maxPointOffset.z + meshObj->position.z };
+        AABB* obstacle = new AABB(min, max);
+
+        obj->pShape = obstacle;
+    }
+
+    mapOBJ.emplace(obj->pMeshObj->instanceName, obj);
+
+}
+
 void cPhysicSystem::updateSystem(float dt)
 {
     objPosUpdate();
 
-    std::map<std::string, cObject*>::iterator playerObj = mapOBJ.find("Player");
-
-    for (std::map<std::string, cObject*>::iterator obj_it = mapOBJ.begin(); obj_it != mapOBJ.end(); obj_it++)
-    {
-        if (obj_it->second->pMeshObj->meshName == "enemy")
-        {
-            bool tmp =
-                collisionCheck(playerObj->second, obj_it->second);
-            if (tmp)
-            {
-                obj_it->second->isHover = true;
-            }
-            else
-            {
-                obj_it->second->isHover = false;
-            }
-        }
-    }
+    //std::map<std::string, cObject*>::iterator playerObj = mapOBJ.find("Player");
+    // physic collision check
+    //for (std::map<std::string, cObject*>::iterator obj_it = mapOBJ.begin(); obj_it != mapOBJ.end(); obj_it++)
+    //{
+    //    if (obj_it->second->pMeshObj->meshName == "enemy")
+    //    {
+    //        bool tmp =
+    //            collisionCheck(playerObj->second, obj_it->second);
+    //        if (tmp)
+    //        {
+    //            obj_it->second->isHover = true;
+    //        }
+    //        else
+    //        {
+    //            obj_it->second->isHover = false;
+    //        }
+    //    }
+    //}
+    
 
 }
 
@@ -197,20 +242,25 @@ bool cPhysicSystem::gameUpdate()
             }
             int dirX = (rand() % 100) - 50;
             int dirZ = (rand() % 100) - 50;
-            obj_it->second->direction += glm::normalize(glm::vec3(dirX, 0, dirZ));
+            obj_it->second->direction = glm::normalize(obj_it->second->direction + glm::vec3(dirX, 0, dirZ));
         }
     }
+
     return true;
 }
 
 bool cPhysicSystem::objPosUpdate()
 {
     float step = 0.1f;
+    std::map<std::string, cObject*>::iterator playerObj = mapOBJ.find("Player");
+
     for (std::map<std::string, cObject*>::iterator obj_it = mapOBJ.begin(); obj_it != mapOBJ.end(); obj_it++)
     {
         if (obj_it->second->pMeshObj->meshName == "enemy")
         {
+            obj_it->second->AI_update(playerObj->second);
             obj_it->second->position += obj_it->second->direction * step;
+            obj_it->second->yRotation = asin(obj_it->second->direction.x);
             obj_it->second->update();
 
         }

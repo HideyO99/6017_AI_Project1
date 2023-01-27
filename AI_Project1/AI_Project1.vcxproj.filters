@@ -40,6 +40,9 @@
     <Filter Include="XML">
       <UniqueIdentifier>{22e4f48b-8e16-4c7f-9dbf-0ea161dda56a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{56006625-7ff7-4458-9068-476fb7c69092}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GUI\cGUI.cpp">
@@ -129,6 +132,12 @@
     <ClCompile Include="src\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AI\cAI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\cSteering.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GUI\cGUI.h">
@@ -217,6 +226,12 @@
     </ClInclude>
     <ClInclude Include="src\time.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\cAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\cSteering.h">
+      <Filter>AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

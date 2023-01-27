@@ -54,11 +54,11 @@ bool cGUI::ImGUICreateFrame()
 
 bool cGUI::ImGUI_render()
 {
-    ImGui::Begin("crosshair");
-    ImVec2 window_size = ImGui::GetIO().DisplaySize;
-    ImVec2 window_center = ImVec2(window_size.x / 2, window_size.y / 2);
-    ImGui::GetForegroundDrawList()->AddCircle(window_center, window_size.x / 200, IM_COL32(0, 0, 255, 255), 0, 5);
-    ImGui::End();
+    //ImGui::Begin("crosshair");
+    //ImVec2 window_size = ImGui::GetIO().DisplaySize;
+    //ImVec2 window_center = ImVec2(window_size.x / 2, window_size.y / 2);
+    //ImGui::GetForegroundDrawList()->AddCircle(window_center, window_size.x / 200, IM_COL32(0, 0, 255, 255), 0, 5);
+    //ImGui::End();
 
     ImGui::Begin("Model Settings");
 
@@ -75,22 +75,22 @@ bool cGUI::ImGUI_render()
             for (int i = 0; i < pVecInstanceMeshObj->size(); i++)
             {
                 cMeshObj* pCurrentMeshObject = pVecInstanceMeshObj->at(i);
-                if ((pCurrentMeshObject->meshName == "enemy") || (pCurrentMeshObject->meshName == "obstacle"))
+                if ((pCurrentMeshObject->meshName == "enemy") || (pCurrentMeshObject->meshName == "player"))
                 {
                     //ImGui::Text(pCurrentMeshObject->instanceName.c_str());
                     if (ImGui::TreeNode((void*)(intptr_t)i, pCurrentMeshObject->instanceName.c_str()))
                     {
                         ImGui::BeginGroup();
                         ImGui::DragFloat("X pos##", &pCurrentMeshObject->position.x, 0.1f);
-                        ImGui::DragFloat("Y pos##", &pCurrentMeshObject->position.y, 0.1f);
+                        //ImGui::DragFloat("Y pos##", &pCurrentMeshObject->position.y, 0.1f);
                         ImGui::DragFloat("Z pos##", &pCurrentMeshObject->position.z, 0.1f);
                         ImGui::EndGroup();
-                        //ImGui::NewLine();
-                        //ImGui::BeginGroup();
+                        ImGui::NewLine();
+                        ImGui::BeginGroup();
                         //ImGui::DragFloat("X Rotate##", &pCurrentMeshObject->rotation.x, 0.1f);
-                        //ImGui::DragFloat("Y Rotate##", &pCurrentMeshObject->rotation.y, 0.1f);
+                        ImGui::DragFloat("Y Rotate##", &pCurrentMeshObject->rotation.y, 0.1f);
                         //ImGui::DragFloat("Z Rotate##", &pCurrentMeshObject->rotation.z, 0.1f);
-                        //ImGui::EndGroup();
+                        ImGui::EndGroup();
                         //ImGui::NewLine();
                         //ImGui::BeginGroup();
                         //ImGui::DragFloat("R ##", &pCurrentMeshObject->color_RGBA.r, 0.01f, 0.f, 1.f);

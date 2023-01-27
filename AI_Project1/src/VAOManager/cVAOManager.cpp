@@ -506,12 +506,21 @@ bool cVAOManager::setDungeonTexture(std::string meshObjName, std::string texture
 			itCurrentMesh->second->scale = glm::vec3(0.1);
 			itCurrentMesh->second->position.x = itCurrentMesh->second->position.x * 5;
 			itCurrentMesh->second->position.z = itCurrentMesh->second->position.z * 5;
-			itCurrentMesh->second->isVisible = true;
+			itCurrentMesh->second->isVisible = false;
 		}
 		if ((itCurrentMesh->second->meshName == "enemy"))
 		{
 			itCurrentMesh->second->bUse_RGBA_colour = true;
 			itCurrentMesh->second->color_RGBA = glm::vec4(1.f, 0.f, 0.f, 1.f);
+			itCurrentMesh->second->position.x = itCurrentMesh->second->position.x * 5;
+			itCurrentMesh->second->position.y = 1;
+			itCurrentMesh->second->position.z = itCurrentMesh->second->position.z * 5;
+			itCurrentMesh->second->isVisible = true;
+		}
+		if ((itCurrentMesh->second->meshName == "player"))
+		{
+			itCurrentMesh->second->bUse_RGBA_colour = true;
+			itCurrentMesh->second->color_RGBA = glm::vec4(0.f, 0.f, 0.f, 1.f);
 			itCurrentMesh->second->position.x = itCurrentMesh->second->position.x * 5;
 			itCurrentMesh->second->position.y = 1;
 			itCurrentMesh->second->position.z = itCurrentMesh->second->position.z * 5;

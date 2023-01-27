@@ -26,6 +26,7 @@
 #include "time.h"
 #include "Physic/cPhysicSystem.h"
 
+
 #define MODEL_LIST_XML          "asset/model.xml"
 #define VERTEX_SHADER_FILE      "src/shader/vertexShader.glsl"
 #define FRAGMENT_SHADER_FILE    "src/shader/fragmentShader.glsl"
@@ -35,7 +36,7 @@ glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, 0.0f);
 glm::vec3 g_cameraTarget = glm::vec3(1.0f, 1.0f, 1.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 g_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-bool bIsWalkAround = true;
+bool bIsWalkAround = false;
 bool firstMouse = true;
 float yaw = -90.0f;	
 float pitch = 0.0f;
@@ -56,6 +57,7 @@ cLightManager* g_pTheLightManager = NULL;
 static GLFWwindow* window = nullptr;
 cPhysicSystem g_physicSys;
 cTextureManager* g_pTextureManager = NULL;
+cObject* g_player;
 
 
 static void error_callback(int error, const char* description)
@@ -234,7 +236,7 @@ int main(void)
 
     result = pVAOManager->setInstanceObjScale("bullet", 0.1);
     result = pVAOManager->setInstanceObjRGB("bullet", glm::vec4(0.f, 0.f, 1.f, 1.f));
-    result = pVAOManager->setInstanceObjWireframe("Player", true);
+    result = pVAOManager->setInstanceObjWireframe("Player", false);
 
 
     result = pVAOManager->setInstanceObjWireframe("obstacle1", true);
@@ -251,19 +253,22 @@ int main(void)
 
     cModelDrawInfo drawingInformation;
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy1"))->meshName.c_str(), drawingInformation);
-    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy1"), &drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy1"), &drawingInformation, cObject::TYPE_A );
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy2"))->meshName.c_str(), drawingInformation);
-    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy2"), &drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy2"), &drawingInformation, cObject::TYPE_A);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy3"))->meshName.c_str(), drawingInformation);
-    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy3"), &drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy3"), &drawingInformation, cObject::TYPE_B);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy4"))->meshName.c_str(), drawingInformation);
-    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy4"), &drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy4"), &drawingInformation, cObject::TYPE_B);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy5"))->meshName.c_str(), drawingInformation);
-    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy5"), &drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy5"), &drawingInformation, cObject::TYPE_C);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("bullet"))->meshName.c_str(), drawingInformation);
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("bullet"), &drawingInformation);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("Player"))->meshName.c_str(), drawingInformation);
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("Player"), &drawingInformation);
+    std::map<std::string, cObject*>::iterator playerObj = g_physicSys.mapOBJ.find("Player");
+    g_player = playerObj->second;
+    
 
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("obstacle1"))->meshName.c_str(), drawingInformation);
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("obstacle1"), &drawingInformation);
@@ -719,27 +724,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     //move camera
     // AWSD AD-Left, Right
     //      WS-Forward, Back
-    const float CAMERA_MOVE_SPEED = 5.f;
+    //const float CAMERA_MOVE_SPEED = 5.f;
+    const float MOVE_SPEED = 5.f;
+    const float PI = 3.141f;
     if (key == GLFW_KEY_A)
     {
+        g_player->yRotation += PI / 10;
+        
         //::g_cameraEye.x -= CAMERA_MOVE_SPEED;
-        ::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
+        //::g_cameraEye += (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
         
     }
     if (key == GLFW_KEY_D)
     {
+        g_player->yRotation -= PI / 10;
         //::g_cameraEye.x += CAMERA_MOVE_SPEED;
-        ::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
+        //::g_cameraEye -= (glm::normalize(glm::cross(g_upVector, (::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED)));
     }
     if (key == GLFW_KEY_W)
     {
+        g_player->position += (g_player->direction );
         //::g_cameraEye.z -= CAMERA_MOVE_SPEED;
-        ::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
+        //::g_cameraEye += ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
     }
     if (key == GLFW_KEY_S)
     {
+        g_player->position -= (g_player->direction);
         //::g_cameraEye.z += CAMERA_MOVE_SPEED;
-        ::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
+        //::g_cameraEye -= ((::g_cameraFront * glm::vec3(1, 0, 1)) * CAMERA_MOVE_SPEED);
     }
     if (key == GLFW_KEY_Q)
     {
@@ -757,7 +769,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         //bIsWalkAround = !bIsWalkAround;
     }
 
-    checkBorder();
+    //checkBorder();
 }
 void checkBorder()
 {
@@ -821,7 +833,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     }
     else
     {
-        ::g_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        //::g_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     }
 }
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -832,9 +844,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
-        std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("bullet");
-        obj_it->second->position = ::g_cameraEye;
-        ::g_physicSys.fire(::g_cameraFront);
+        //std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("bullet");
+        //obj_it->second->position = ::g_cameraEye;
+        //::g_physicSys.fire(::g_cameraFront);
     }
 
 }
@@ -860,16 +872,21 @@ void updateByFrameRate()
         g_LastCall = g_CurrentTime;
 
         std::map<std::string, cObject*>::iterator obj_it = g_physicSys.mapOBJ.find("Player");
-        obj_it->second->position = ::g_cameraEye;
+        //obj_it->second->position = ::g_cameraEye;
+
+        //cal player velocity
+        obj_it->second->velocity.x = (obj_it->second->position.x - obj_it->second->prevPosition.x)/ elapsedTime;
+        obj_it->second->velocity.z = (obj_it->second->position.z - obj_it->second->prevPosition.z) / elapsedTime;
+
         obj_it->second->update();
 
         g_physicSys.updateSystem(elapsedTime);
     }
-    if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
-    {
-        double elapsedTime = g_CurrentTime - g_LastCall5s;
-        g_LastCall5s = g_CurrentTime;
+    //if (g_CurrentTime >= g_LastCall5s + SEC_UPDATE)
+    //{
+    //    double elapsedTime = g_CurrentTime - g_LastCall5s;
+    //    g_LastCall5s = g_CurrentTime;
 
-        g_physicSys.gameUpdate();
-    }
+    //    g_physicSys.gameUpdate();
+    //}
 }

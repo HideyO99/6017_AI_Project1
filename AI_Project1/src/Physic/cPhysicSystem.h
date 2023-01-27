@@ -17,6 +17,7 @@ public:
 
 	//void createEnvironment(cModelDrawInfo drawInfo);
 	void createObject(cMeshObj* meshObj, cModelDrawInfo* DrawInfo);
+	void createObject(cMeshObj* meshObj, cModelDrawInfo* DrawInfo, cObject::AI_type AI_type);
 	void updateSystem(float dt);
 
 	bool collisionCheck(cObject* pObjA, cObject* pObjB);
