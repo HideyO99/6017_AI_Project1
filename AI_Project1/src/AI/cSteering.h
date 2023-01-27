@@ -1,6 +1,9 @@
 #pragma once
 #include <glm/glm.hpp> 
 
+#define AHEAD	3
+#define APPROCH_OUTER_RADIUS	7
+#define APPROCH_INNER_RADIUS	5
 
 class cSteering
 {

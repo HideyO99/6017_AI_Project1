@@ -112,6 +112,7 @@ void cObject::AI_update(cObject* playerObj)
 	}
 	if (AI_Type == AI_type::TYPE_C)
 	{
-		
+		this->pSteering->Approches(playerObj->position);
+		this->pMeshObj->color_RGBA = APPROCH_COLOR;
 	}
 }

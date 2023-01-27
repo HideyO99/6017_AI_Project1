@@ -8,6 +8,7 @@
 #define FLEE_COLOR		glm::vec4(0,0,1,1)
 #define PURSUE_COLOR	glm::vec4(1,1,0,1)
 #define EVADE_COLOR		glm::vec4(0,1,1,1)
+#define APPROCH_COLOR	glm::vec4(1,0,1,1)
 
 class cObject
 {
