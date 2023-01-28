@@ -262,6 +262,18 @@ int main(void)
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy4"), &drawingInformation, cObject::TYPE_B);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy5"))->meshName.c_str(), drawingInformation);
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy5"), &drawingInformation, cObject::TYPE_C);
+
+    result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy6"))->meshName.c_str(), drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy6"), &drawingInformation, cObject::TYPE_A);
+    result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy7"))->meshName.c_str(), drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy7"), &drawingInformation, cObject::TYPE_A);
+    result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy8"))->meshName.c_str(), drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy8"), &drawingInformation, cObject::TYPE_B);
+    result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy9"))->meshName.c_str(), drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy9"), &drawingInformation, cObject::TYPE_B);
+    result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("enemy10"))->meshName.c_str(), drawingInformation);
+    g_physicSys.createObject(pVAOManager->findMeshObjAddr("enemy10"), &drawingInformation, cObject::TYPE_C);
+
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("bullet"))->meshName.c_str(), drawingInformation);
     g_physicSys.createObject(pVAOManager->findMeshObjAddr("bullet"), &drawingInformation);
     result = pVAOManager->FindDrawInfo((pVAOManager->findMeshObjAddr("Player"))->meshName.c_str(), drawingInformation);

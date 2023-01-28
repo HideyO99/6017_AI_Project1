@@ -78,6 +78,7 @@ void cObject::update()
 
 void cObject::AI_update(cObject* playerObj)
 {
+	
 	if (AI_Type == AI_type::TYPE_A)
 	{
 		float faceforward = glm::dot(playerObj->direction, this->position - playerObj->position);
@@ -115,4 +116,7 @@ void cObject::AI_update(cObject* playerObj)
 		this->pSteering->Approches(playerObj->position);
 		this->pMeshObj->color_RGBA = APPROCH_COLOR;
 	}
+
+	//float angle = acos(glm::dot(this->direction, this->position - playerObj->position) / (glm::length(this->direction) * glm::length(this->position - playerObj->position)));
+	//this->yRotation = angle * 0.1f;
 }
